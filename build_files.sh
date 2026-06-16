@@ -1,16 +1,18 @@
 #!/bin/bash
 echo "BUILD START"
 
-# Install pip and dependencies
-# Using 'python3 -m ensurepip' might help if pip is missing
-python3 -m ensurepip
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt
+# Ensure we have pip
+python3 -m ensurepip || echo "ensurepip failed"
+python3 -m pip install --upgrade pip || echo "pip upgrade failed"
 
-# Ensure the output directory exists
+# Install dependencies
+python3 -m pip install -r requirements.txt || pip install -r requirements.txt
+
+# Create output directory
 mkdir -p staticfiles_build
 
-# Run collectstatic
-python3 manage.py collectstatic --noinput --clear
+# Collect static files
+# Use python3 and fall back to python3.9 if needed
+python3 manage.py collectstatic --noinput --clear || python3.9 manage.py collectstatic --noinput --clear
 
 echo "BUILD END"
